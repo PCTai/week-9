@@ -32,17 +32,18 @@ const Weather = () => {
     <Helmet title="Weather" className="">
       <div className="weather h-screen ">
         <div className="container m-auto p-6 pt-0 pb-0 relative h-full">
+       
           <div className="absolute top-6 left-4">
             <Link to={'/home'}><button className=' p-2 pl-4 pr-4 text-white rounded-full border border-slate-300'>Back</button></Link>
           </div>
           <div className="absolute top-6 right-4">
             <button
               onClick={() => setOpen(!open)}
-              className=' p-2 pl-4 pr-4 text-white rounded-full border border-slate-300'
+              className=' p-2 pl-4 pr-4 text-white rounded-full border border-slate-300 '
             >Map</button>
-              {open && <div className='absolute w-full h-full top-0 right-0 bottom-0 left-0'>
+             {open && <div className='absolute w-96 h-96 top-12 right-0  z-20 '>
                 <GoogleMapReact
-                  bootstrapURLKeys={{ key: "" }}
+                  bootstrapURLKeys={{ key: "AIzaSyAmGRGC_q6HJoA6rKxk6kqkupFhJa0u4Og" }}
                   defaultCenter={defaultProps.center}
                   defaultZoom={defaultProps.zoom}
                 >
@@ -53,6 +54,7 @@ const Weather = () => {
                   />  
                 </GoogleMapReact>
               </div>}
+             
           </div>
           <div className="pt-6  text-center">
             <input className='placeholder:italic placeholder:text-white bg-white  border border-slate-300 rounded-3xl py-2 pl-4 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm text-white bg-transparent'
