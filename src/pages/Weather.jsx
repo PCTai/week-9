@@ -10,14 +10,14 @@ const Weather = () => {
   const [data, setData] = useState({});
   const [marker, setMarker] = useState({
     text: 'my marker',
-    lat: 10.99835602,
-    lng: 77.01502627
+    lat: 16.4667,
+    lng: 107.6
   });
   const [open, setOpen] = useState(false);
   const defaultProps = {
     center: {
-      lat: 10.99835602,
-      lng: 77.01502627
+      lat: 16.4667,
+      lng: 107.6
     },
     zoom: 11
   };
@@ -35,6 +35,8 @@ const Weather = () => {
     if (key === "Enter") {
       const data = await getWeatherFormLocation(location);
       setData(data);
+      console.log(data);
+      setLocation('');
     }
   }
   const handleOnclick = (e) => {
