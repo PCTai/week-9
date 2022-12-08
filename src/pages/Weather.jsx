@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useFetcher } from 'react-router-dom';
 import Helmet from '../components/Helmet'
+// import MyMarker from '../components/MyMarker';
 import GoogleMapReact from 'google-map-react';
+import { getLocation, getWeatherFormLocation } from '../helper';
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
 const Weather = () => {
   const [location, setLocation] = useState('');
   const [data, setData] = useState({});
+  const [marker, setMarker] = useState({
+    text: 'my marker',
+    lat: 10.99835602,
+    lng: 77.01502627
+  });
   const [open, setOpen] = useState(false);
   const defaultProps = {
     center: {
@@ -15,24 +21,37 @@ const Weather = () => {
     },
     zoom: 11
   };
+  useEffect(() => {
+    const setNewLocation = async () => {
+      const location = await getLocation(marker);
+      const data = await getWeatherFormLocation(location);
+      setData(data);
+    }
+    setNewLocation()
+  }, [marker]);
 
-  const handleSearchLocation = (e) => {
+  const handleSearchLocation = async (e) => {
     const { key } = e;
     if (key === "Enter") {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=895284fb2d2c50a520ea537456963d9c`)
-        .then(res => res.json())
-        .then(res => {
-          console.log(res);
-          setData(res);
-          setLocation('');
-        })
+      const data = await getWeatherFormLocation(location);
+      setData(data);
     }
+  }
+  const handleOnclick = (e) => {
+    const { lat, lng } = e;
+    setMarker(
+      {
+        text: "new",
+        lat,
+        lng
+      }
+    )
   }
   return (
     <Helmet title="Weather" className="">
       <div className="weather h-screen ">
         <div className="container m-auto p-6 pt-0 pb-0 relative h-full">
-       
+
           <div className="absolute top-6 left-4">
             <Link to={'/home'}><button className=' p-2 pl-4 pr-4 text-white rounded-full border border-slate-300'>Back</button></Link>
           </div>
@@ -41,20 +60,18 @@ const Weather = () => {
               onClick={() => setOpen(!open)}
               className=' p-2 pl-4 pr-4 text-white rounded-full border border-slate-300 '
             >Map</button>
-             {open && <div className='absolute w-96 h-96 top-12 right-0  z-20 '>
-                <GoogleMapReact
-                  bootstrapURLKeys={{ key: "AIzaSyAmGRGC_q6HJoA6rKxk6kqkupFhJa0u4Og" }}
-                  defaultCenter={defaultProps.center}
-                  defaultZoom={defaultProps.zoom}
-                >
-                  <AnyReactComponent
-                    lat={59.955413}
-                    lng={30.337844}
-                    text="My Marker"
-                  />  
-                </GoogleMapReact>
-              </div>}
-             
+
+            {open && <div className='absolute w-96 h-96 top-12 right-0  z-20 '>
+              <GoogleMapReact
+                bootstrapURLKeys={{ key: "" }}
+                defaultCenter={defaultProps.center}
+                defaultZoom={defaultProps.zoom}
+                onClick={(e) => handleOnclick(e)}
+              >
+                {/* { marker.text && <MyMarker marker={marker}/>} */}
+              </GoogleMapReact>
+            </div>}
+
           </div>
           <div className="pt-6  text-center">
             <input className='placeholder:italic placeholder:text-white bg-white  border border-slate-300 rounded-3xl py-2 pl-4 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm text-white bg-transparent'
@@ -90,10 +107,7 @@ const Weather = () => {
                 {data.main && <h3 className="font-bold text-3xl text-white">{data.wind.speed}</h3>}
                 <h3 className="font-medium text-white text-xl">Wind</h3>
               </div>
-              {/* <div className="">
-              {data.main && <h3 className="font-bold text-3xl text-white">30°F</h3>}
-              <h3 className="font-medium text-white text-xl">FeelLike</h3>
-              </div> */}
+             
             </div>
           </div>
         </div>
